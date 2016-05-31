@@ -44,6 +44,7 @@ import backtype.storm.Config;
 
 import com.twitter.heron.api.generated.TopologyAPI.Grouping;
 import com.twitter.heron.api.topology.*;
+import com.twitter.heron.common.utils.tuple.TickTuple;
 
 import backtype.storm.Constants;
 //import backtype.storm.generated.Grouping;
@@ -1517,9 +1518,11 @@ public class MyUtilities {
     }
 
     public static boolean isTickTuple(Tuple tuple) {
-	return tuple.getSourceComponent().equals(Constants.SYSTEM_COMPONENT_ID)
-		&& tuple.getSourceStreamId().equals(
-			Constants.SYSTEM_TICK_STREAM_ID);
+    	return tuple instanceof TickTuple; 
+    	
+//	return tuple.getSourceComponent().equals(Constants.SYSTEM_COMPONENT_ID)
+//		&& tuple.getSourceStreamId().equals(
+//			Constants.SYSTEM_TICK_STREAM_ID);
     }
 
     public static boolean isTotalOutputSize(List<String> tuple) {
