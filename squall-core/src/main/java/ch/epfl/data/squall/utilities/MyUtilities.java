@@ -37,15 +37,20 @@ import java.util.TreeMap;
 
 import ch.epfl.data.squall.storm_components.hyper_cube.stream_grouping.HyperCubeGrouping;
 import ch.epfl.data.squall.thetajoin.matrix_assignment.HyperCubeAssignment;
+
 import org.apache.log4j.Logger;
 
 import backtype.storm.Config;
+
+import com.twitter.heron.api.generated.TopologyAPI.Grouping;
+import com.twitter.heron.api.topology.*;
+
 import backtype.storm.Constants;
-import backtype.storm.generated.Grouping;
+//import backtype.storm.generated.Grouping;
 import backtype.storm.grouping.CustomStreamGrouping;
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.OutputCollector;
-import backtype.storm.task.TopologyContext;
+//import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.InputDeclarer;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;

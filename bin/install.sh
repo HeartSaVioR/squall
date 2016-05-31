@@ -10,11 +10,11 @@
 # sudo apt-get install scala
 
 # Downloading Storm and putting it to the right place
-echo "Downloading and extracting $STORMNAME ..."
-wget http://mirror.easyname.ch/apache/storm/$STORMNAME/$STORMNAME.tar.gz
-tar -xzf $STORMNAME.tar.gz
-mv $STORMNAME ..
-rm $STORMNAME.tar.gz
+#echo "Downloading and extracting $STORMNAME ..."
+#wget http://mirror.easyname.ch/apache/storm/$STORMNAME/$STORMNAME.tar.gz
+#tar -xzf $STORMNAME.tar.gz
+#mv $STORMNAME ..
+#rm $STORMNAME.tar.gz
 
 # Compiling Squall and generating dependencies 
 echo "Compiling Squall and generating dependencies ..."

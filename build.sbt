@@ -90,15 +90,17 @@ lazy val squall = (project in file("squall-core")).
       // bdb-je: 5.0.84 -> 5.0.73
       //"com.sleepycat" % "je" % "5.0.73",
       // storm-core: 0.9.2-incubating -> 0.9.4
-      "org.apache.storm" % "storm-core" % "0.9.4" % "provided",
+      "com.twitter.heron" % "heron-api" % "0.14.0", 
+      "com.twitter.heron" % "heron-storm" % "0.14.0", 
+      //"org.apache.storm" % "storm-core" % "0.9.4" % "provided",
       "org.slf4j" % "log4j-over-slf4j" % "1.7.12",
       //"io.dropwizard" % "dropwizard-metrics" % "0.8.1",
       //"org.apache.storm" % "storm-starter" % "0.9.4",
       "junit" % "junit" % "4.12" % Test,
       "com.novocode" % "junit-interface" % "0.11" % Test,
       "org.apache.hadoop" % "hadoop-client" % "2.2.0" exclude("org.slf4j", "slf4j-log4j12"),
-      "org.apache.hadoop" % "hadoop-hdfs" % "2.2.0" exclude("org.slf4j", "slf4j-log4j12"),
-      "org.apache.storm" % "storm-hdfs" % "0.10.0-beta1"
+      "org.apache.hadoop" % "hadoop-hdfs" % "2.2.0" exclude("org.slf4j", "slf4j-log4j12")
+      //,"org.apache.storm" % "storm-hdfs" % "0.10.0-beta1"
         //"com.github.ptgoetz" % "storm-signals" % "0.2.0",
         //"com.netflix.curator" % "curator-framework" % "1.0.1"
     ),
@@ -183,7 +185,9 @@ lazy val functional = (project in file("squall-functional")).
         (test in Test).value
     },
     name := "squall-frontend",
-    libraryDependencies += "org.apache.storm" % "storm-core" % "0.9.4" % "provided",
+    //libraryDependencies += "org.apache.storm" % "storm-core" % "0.9.4" % "provided",
+    libraryDependencies +=  "com.twitter.heron" % "heron-api" % "0.14.0",
+    libraryDependencies +=  "com.twitter.heron" % "heron-storm" % "0.14.0", 
     libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-reflect" % _),
     libraryDependencies +=  "org.scalatest" % "scalatest_2.11" % "2.2.4" % Test,
     // Interactive mode
