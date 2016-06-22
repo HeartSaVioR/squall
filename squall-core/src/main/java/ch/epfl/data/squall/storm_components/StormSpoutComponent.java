@@ -33,7 +33,6 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import ch.epfl.data.squall.components.ComponentProperties;
-import ch.epfl.data.squall.ewh.operators.SampleAsideAndForwardOperator;
 import ch.epfl.data.squall.expressions.ValueExpression;
 import ch.epfl.data.squall.operators.AggregateOperator;
 import ch.epfl.data.squall.operators.ChainOperator;
@@ -221,14 +220,6 @@ public abstract class StormSpoutComponent extends BaseRichSpout implements
 	for (int i = 0; i < _targetParallelism; i++)
 	    _targetBuffers[i] = new StringBuilder("");
 
-	// equi-weight histogram
-	if (_isPartitioner) {
-	    // extract sampleAside operator
-	    SampleAsideAndForwardOperator saf = getChainOperator()
-		    .getSampleAside();
-	    saf.setCollector(_collector);
-	    saf.setComponentIndex(_componentIndex);
-	}
     }
 
     @Override

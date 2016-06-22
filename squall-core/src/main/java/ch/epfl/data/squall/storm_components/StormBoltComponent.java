@@ -35,8 +35,6 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import ch.epfl.data.squall.components.ComponentProperties;
-import ch.epfl.data.squall.ewh.main.PushStatisticCollector;
-import ch.epfl.data.squall.ewh.operators.SampleAsideAndForwardOperator;
 import ch.epfl.data.squall.expressions.ValueExpression;
 import ch.epfl.data.squall.operators.AggregateOperator;
 import ch.epfl.data.squall.operators.ChainOperator;
@@ -85,9 +83,6 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
     // counting negative values
     protected long numNegatives = 0;
     protected double maxNegative = 0;
-
-    // StatisticsCollector
-    private PushStatisticCollector _sc;
 
     // EWH histogram
     private boolean _isEWHPartitioner;
@@ -192,9 +187,6 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 	if (getChainOperator() != null) {
 	    getChainOperator().finalizeProcessing();
 	}
-	if (MyUtilities.isStatisticsCollector(_conf, _hierarchyPosition)) {
-	    _sc.finalizeProcessing();
-	}
     }
 
     public abstract ChainOperator getChainOperator();
@@ -266,18 +258,6 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 
 	// initial statistics
 	printStatistics(SystemParameters.INITIAL_PRINT);
-	if (MyUtilities.isStatisticsCollector(_conf, _hierarchyPosition)) {
-	    _sc = new PushStatisticCollector(map);
-	}
-
-	// equi-weight histogram
-	if (_isEWHPartitioner) {
-	    // extract sampleAside operator
-	    SampleAsideAndForwardOperator saf = getChainOperator()
-		    .getSampleAside();
-	    saf.setCollector(_collector);
-	    saf.setComponentIndex(_componentIndex);
-	}
     }
 
     @Override
@@ -409,13 +389,6 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 		timestamp, _componentIndex, _hashIndexes, _hashExpressions,
 		_conf);
 	MyUtilities.sendTuple(stormTupleSnd, stormTupleRcv, _collector, _conf);
-    }
-
-    protected void sendToStatisticsCollector(List<String> tuple,
-	    int relationNumber) {
-	if (MyUtilities.isStatisticsCollector(_conf, _hierarchyPosition)) {
-	    _sc.processTuple(tuple, relationNumber);
-	}
     }
 
     protected void setCollector(OutputCollector collector) {
