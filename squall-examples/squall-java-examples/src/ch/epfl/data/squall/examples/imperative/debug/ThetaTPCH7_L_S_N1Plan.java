@@ -197,16 +197,6 @@ public class ThetaTPCH7_L_S_N1Plan extends QueryPlan {
 	if (printSelected) {
 	    relationLineitem.setPrintOut(false);
 	    S_Njoin.setPrintOut(false);
-	} else if (isOkcanSampling) {
-	    // TODO there are two projections if we are doing sampling, not such
-	    // a big deal
-	    _queryBuilder = MyUtilities.addOkcanSampler(relationLineitem,
-		    S_Njoin, firstKeyProject, secondKeyProject, _queryBuilder,
-		    keyType, comparison, conf);
-	} else if (isEWHSampling) {
-	    _queryBuilder = MyUtilities.addEWHSampler(relationLineitem,
-		    S_Njoin, firstKeyProject, secondKeyProject, _queryBuilder,
-		    keyType, comparison, conf);
 	} else {
 	    final int Theta_JoinType = ThetaQueryPlansParameters
 		    .getThetaJoinType(conf);

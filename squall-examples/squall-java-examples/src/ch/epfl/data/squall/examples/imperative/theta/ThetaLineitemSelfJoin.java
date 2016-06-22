@@ -145,14 +145,6 @@ public class ThetaLineitemSelfJoin {
 	if (printSelected) {
 	    relationLineitem1.setPrintOut(false);
 	    relationLineitem2.setPrintOut(false);
-	} else if (isOkcanSampling) {
-	    _queryBuilder = MyUtilities.addOkcanSampler(relationLineitem1,
-		    relationLineitem2, firstKeyProject, secondKeyProject,
-		    _queryBuilder, keyType, comparison, conf);
-	} else if (isEWHSampling) {
-	    _queryBuilder = MyUtilities.addEWHSampler(relationLineitem1,
-		    relationLineitem2, firstKeyProject, secondKeyProject,
-		    _queryBuilder, keyType, comparison, conf);
 	} else {
 	    int Theta_JoinType = ThetaQueryPlansParameters
 		    .getThetaJoinType(conf);
