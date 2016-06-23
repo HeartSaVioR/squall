@@ -54,11 +54,13 @@ public class SquallContext {
 
     private Config conf;
     private boolean local;
+    private boolean isStormRead = true;
     private List<ReaderProvider> readerProviders;
 
     public SquallContext() {
 	this(new Config());
 
+	isStormRead = false;
 	//Map stormConf = backtype.storm.utils.Utils.readStormConfig(); This method does not exist in Heron; replacement is in setLocal/setDistributed
 
 	// Load default values
@@ -169,13 +171,15 @@ public class SquallContext {
 
     private static final String DEFAULTS_YAML = "com/twitter/heron/spi/common/defaults.yaml"; // LocalConstants.DEFAULTS_YAML is invisible
     public void setLocal() {
-	// Locally reading configuration as in heron/heron/commont/tests/java in com.twitter.heron.common.config.ConfigReaderTest.java
-	// Original: String file = Paths.get(System.getenv("JAVA_RUNFILES"), Constants.TEST_DATA_PATH, "defaults.yaml").toString();
-	String configPath = Paths.get(System.getenv("JAVA_RUNFILES"), DEFAULTS_YAML).toString();
-	Map<String, Object> props = ConfigReader.loadFile(configPath);
-	// Alternatively, use findAndReadLocalFile method, which takes path and returns a map	
-	conf.putAll(props);
-	conf.putAll(backtype.storm.utils.Utils.readCommandLineOpts());  //Added in Heron, as readStormConfig() invoked this one
+	if(!isStormRead){
+	    // Locally reading configuration as in heron/heron/commont/tests/java in com.twitter.heron.common.config.ConfigReaderTest.java
+	    // Original: String file = Paths.get(System.getenv("JAVA_RUNFILES"), Constants.TEST_DATA_PATH, "defaults.yaml").toString();
+	    String configPath = Paths.get(System.getenv("JAVA_RUNFILES"), DEFAULTS_YAML).toString();
+	    Map<String, Object> props = ConfigReader.loadFile(configPath);
+	    // Alternatively, use findAndReadLocalFile method, which takes path and returns a map	
+	    conf.putAll(props);
+	    conf.putAll(backtype.storm.utils.Utils.readCommandLineOpts());  //Added in Heron, as readStormConfig() invoked this one
+	}
 
 
 	SystemParameters.putInMap(conf, "storm.cluster.mode", "local");
@@ -186,13 +190,15 @@ public class SquallContext {
     }
 
     public void setDistributed() {
-	// Cluster reading configuration as in heron/heron/commont/tests/java in com.twitter.heron.common.config.ClusterConfigReaderTest.java
-	// Original: String configPath = Paths.get(System.getenv("JAVA_RUNFILES"), Constants.TEST_DATA_PATH).toString();
-	String configPath = Paths.get(System.getenv("JAVA_RUNFILES"), DEFAULTS_YAML).toString();
-	Map<String, Object> props = ClusterConfigReader.load("cluster", configPath, "defaults.yaml");
-	// Alternatively, use findAndReadLocalFile method, which takes path and returns a map
-	conf.putAll(props);
-	conf.putAll(backtype.storm.utils.Utils.readCommandLineOpts());  //Added in Heron, as readStormConfig() invoked this one  
+	if(!isStormRead){
+	    // Cluster reading configuration as in heron/heron/commont/tests/java in com.twitter.heron.common.config.ClusterConfigReaderTest.java
+	    // Original: String configPath = Paths.get(System.getenv("JAVA_RUNFILES"), Constants.TEST_DATA_PATH).toString();
+	    String configPath = Paths.get(System.getenv("JAVA_RUNFILES"), DEFAULTS_YAML).toString();
+	    Map<String, Object> props = ClusterConfigReader.load("cluster", configPath, "defaults.yaml");
+	    // Alternatively, use findAndReadLocalFile method, which takes path and returns a map
+	    conf.putAll(props);
+	    conf.putAll(backtype.storm.utils.Utils.readCommandLineOpts());  //Added in Heron, as readStormConfig() invoked this one  
+	}
 
 	SystemParameters.putInMap(conf, "storm.cluster.mode", "distributed");
 	SystemParameters.putInMap(conf, "DIP_DISTRIBUTED", "true");
@@ -249,7 +255,7 @@ public class SquallContext {
 	return new DataSourceComponent(table, provider, resource);
     }
 
-/*    public ClusterSummary getStormClusterSummary() {
+    /*    public ClusterSummary getStormClusterSummary() {
 	return StormWrapper.getClusterInfo(isLocal(), conf);
     }
 
@@ -264,7 +270,7 @@ public class SquallContext {
 
 	return result;
     }
-*/
+     */
     public void killQuery(String name) {
 	try {
 	    StormWrapper.killTopology(isLocal(), conf, name);
@@ -285,7 +291,7 @@ public class SquallContext {
 	}
 
 	return id;*/
-	
+
 	return name; // no auto-completion
     }
 
