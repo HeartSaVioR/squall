@@ -19,7 +19,7 @@
 
 package ch.epfl.data.squall.utilities;
 
-import backtype.storm.serialization.DefaultSerializationDelegate;
+import backtype.storm.serialization.HeronPluggableSerializerDelegate;
 
 import java.net.URLClassLoader;
 import java.net.MalformedURLException;
@@ -39,14 +39,14 @@ import org.apache.log4j.Logger;
 /*
  * Used in local mode to deserialize for the REPL and DBToaster
  */
-public class SquallSerializationDelegate extends DefaultSerializationDelegate {
+public class SquallSerializationDelegate extends HeronPluggableSerializerDelegate {
   private static Logger LOG = Logger.getLogger(SquallSerializationDelegate.class);
 
   private URL classdir;
 
   @Override
-  public void prepare(Map stormConf) {
-    super.prepare(stormConf);
+  public void initialize(Map<String,Object> stormConf) {
+    super.initialize(stormConf);
 
     LOG.info("Setting up SquallSerializationDelegate");
     LOG.info(stormConf.toString());

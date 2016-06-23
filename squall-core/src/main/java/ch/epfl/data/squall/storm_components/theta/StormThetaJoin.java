@@ -35,7 +35,6 @@ import ch.epfl.data.squall.storm_components.StormEmitter;
 import ch.epfl.data.squall.storm_components.StormJoinerBoltComponent;
 import ch.epfl.data.squall.storm_components.synchronization.TopologyKiller;
 import ch.epfl.data.squall.thetajoin.matrix_assignment.ContentInsensitiveMatrixAssignment;
-import ch.epfl.data.squall.thetajoin.matrix_assignment.ContentSensitiveMatrixAssignment;
 import ch.epfl.data.squall.thetajoin.matrix_assignment.MatrixAssignment;
 import ch.epfl.data.squall.types.Type;
 import ch.epfl.data.squall.utilities.MyUtilities;
@@ -71,8 +70,7 @@ public class StormThetaJoin extends StormJoinerBoltComponent {
 	    _currentMappingAssignment = new ContentInsensitiveMatrixAssignment(
 		    firstCardinality, secondCardinality, parallelism, -1);
 	} else {
-	    _currentMappingAssignment = new ContentSensitiveMatrixAssignment(
-		    conf); // TODO
+	    throw new RuntimeException("ContentSensitive not supported for now!");
 	}
 	final String dim = _currentMappingAssignment.toString();
 	LOG.info(getID() + " Initial Dimensions is: " + dim);
