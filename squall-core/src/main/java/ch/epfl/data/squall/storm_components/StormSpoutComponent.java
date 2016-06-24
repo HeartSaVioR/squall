@@ -20,6 +20,7 @@
 package ch.epfl.data.squall.storm_components;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -57,9 +58,11 @@ public abstract class StormSpoutComponent extends BaseRichSpout implements
 
     private final List<Integer> _hashIndexes;
     private final List<ValueExpression> _hashExpressions;
+    
+    private final StormEmitter _targetEmitters;
 
     // for ManualBatch(Queuing) mode
-    private List<Integer> _targetTaskIds;
+//    private List<Integer> _targetTaskIds;
     private int _targetParallelism;
     private StringBuilder[] _targetBuffers;
     private long[] _targetTimestamps;
@@ -80,6 +83,9 @@ public abstract class StormSpoutComponent extends BaseRichSpout implements
 	    boolean isPartitioner, Map conf) {
 	_conf = conf;
 	_ID = cp.getName();
+	
+	_targetEmitters = cp.getChild();
+	
 	_componentIndex = String.valueOf(allCompNames.indexOf(_ID));
 	_printOut = cp.getPrintOut();
 	_hierarchyPosition = hierarchyPosition;
@@ -212,9 +218,10 @@ public abstract class StormSpoutComponent extends BaseRichSpout implements
     @Override
     public void open(Map map, TopologyContext tc, SpoutOutputCollector collector) {
 	_collector = collector;
-
-	_targetTaskIds = MyUtilities.findTargetTaskIds(tc);
-	_targetParallelism = _targetTaskIds.size();
+		
+	_targetParallelism = MyUtilities.getNumTasks(tc,
+		    Arrays.asList(_targetEmitters));
+	
 	_targetBuffers = new StringBuilder[_targetParallelism];
 	_targetTimestamps = new long[_targetParallelism];
 	for (int i = 0; i < _targetParallelism; i++)

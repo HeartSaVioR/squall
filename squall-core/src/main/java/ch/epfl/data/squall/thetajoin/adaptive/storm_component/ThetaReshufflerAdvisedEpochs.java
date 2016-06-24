@@ -493,7 +493,7 @@ public class ThetaReshufflerAdvisedEpochs extends BaseRichBolt {
 	if (_secondEmitter == null) // this is an interchanging data source
 	    _numParentTasks = 1;
 	else {
-	    _numParentTasks = MyUtilities.getNumParentTasks(context,
+	    _numParentTasks = MyUtilities.getNumTasks(context,
 		    _firstEmitter, _secondEmitter);
 	}
 	_numRemainingParentsForLastAck = _numParentTasks;

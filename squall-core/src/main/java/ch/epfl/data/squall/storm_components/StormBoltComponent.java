@@ -71,8 +71,11 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
     protected int _thisTaskID;
 
     // for ManualBatch(Queuing) mode
-    private List<Integer> _targetTaskIds;
+    //private List<Integer> _targetTaskIds;
     private int _targetParallelism;
+    
+    private final StormEmitter _targetEmitters;
+    
     private StringBuilder[] _targetBuffers;
     private long[] _targetTimestamps;
 
@@ -115,7 +118,10 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 	_parentEmitters = cp.getParents();
 	_hashIndexes = cp.getHashIndexes();
 	_hashExpressions = cp.getHashExpressions();
-	// setWindowSemantics(conf); // Set Window Semantics if Available in the
+	
+	_targetEmitters = cp.getChild(); 
+	
+//	 setWindowSemantics(conf); // Set Window Semantics if Available in the
 	// configuration file
     }
 
@@ -244,13 +250,18 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
     @Override
     public void prepare(Map map, TopologyContext tc, OutputCollector collector) {
 	setCollector(collector);
-        _numRemainingParents = MyUtilities.getNumParentTasks(tc,
+        _numRemainingParents = MyUtilities.getNumTasks(tc,
 		    Arrays.asList(_parentEmitters));
-
 	_thisTaskID = tc.getThisTaskId();
 
-	_targetTaskIds = MyUtilities.findTargetTaskIds(tc);
-	_targetParallelism = _targetTaskIds.size();
+	//_targetTaskIds = MyUtilities.findTargetTaskIds(tc);
+	//_targetParallelism = _targetTaskIds.size();
+	
+	_targetParallelism = MyUtilities.getNumTasks(tc,
+		    Arrays.asList(_targetEmitters));
+	
+	
+	//
 	_targetBuffers = new StringBuilder[_targetParallelism];
 	_targetTimestamps = new long[_targetParallelism];
 	for (int i = 0; i < _targetParallelism; i++)

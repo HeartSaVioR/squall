@@ -120,7 +120,7 @@ public class StormSrcHarmonizer extends BaseRichBolt implements StormComponent {
     @Override
     public void prepare(Map conf, TopologyContext tc, OutputCollector collector) {
 	_collector = collector;
-	_numRemainingParents = MyUtilities.getNumParentTasks(tc, _firstEmitter,
+	_numRemainingParents = MyUtilities.getNumTasks(tc, _firstEmitter,
 		_secondEmitter);
     }
 

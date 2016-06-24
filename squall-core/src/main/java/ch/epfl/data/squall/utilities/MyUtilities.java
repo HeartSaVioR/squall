@@ -522,32 +522,32 @@ public class MyUtilities {
     }
 
     // collects all the task ids for "default" stream id
-    public static List<Integer> findTargetTaskIds(TopologyContext tc) {
-	final List<Integer> result = new ArrayList<Integer>();
-	final Map<String, Map<String, Grouping>> streamComponentGroup = tc
-		.getThisTargets();
-	final Iterator<Entry<String, Map<String, Grouping>>> it = streamComponentGroup
-		.entrySet().iterator();
-	while (it.hasNext()) {
-	    final Map.Entry<String, Map<String, Grouping>> pair = it.next();
-	    final String streamId = pair.getKey();
-	    final Map<String, Grouping> componentGroup = pair.getValue();
-	    if (streamId.equalsIgnoreCase("default")) {
-		final Iterator<Entry<String, Grouping>> innerIt = componentGroup
-			.entrySet().iterator();
-		while (innerIt.hasNext()) {
-		    final Map.Entry<String, Grouping> innerPair = innerIt
-			    .next();
-		    final String componentId = innerPair.getKey();
-		    // Grouping group = innerPair.getValue();
-		    // if (group.is_set_direct()){
-		    result.addAll(tc.getComponentTasks(componentId));
-		    // }
-		}
-	    }
-	}
-	return result;
-    }
+//    public static List<Integer> findTargetTaskIds(TopologyContext tc) {
+//	final List<Integer> result = new ArrayList<Integer>();
+//	final Map<String, Map<String, Grouping>> streamComponentGroup = tc
+//		.getThisTargets();
+//	final Iterator<Entry<String, Map<String, Grouping>>> it = streamComponentGroup
+//		.entrySet().iterator();
+//	while (it.hasNext()) {
+//	    final Map.Entry<String, Map<String, Grouping>> pair = it.next();
+//	    final String streamId = pair.getKey();
+//	    final Map<String, Grouping> componentGroup = pair.getValue();
+//	    if (streamId.equalsIgnoreCase("default")) {
+//		final Iterator<Entry<String, Grouping>> innerIt = componentGroup
+//			.entrySet().iterator();
+//		while (innerIt.hasNext()) {
+//		    final Map.Entry<String, Grouping> innerPair = innerIt
+//			    .next();
+//		    final String componentId = innerPair.getKey();
+//		    // Grouping group = innerPair.getValue();
+//		    // if (group.is_set_direct()){
+//		    result.addAll(tc.getComponentTasks(componentId));
+//		    // }
+//		}
+//	    }
+//	}
+//	return result;
+//    }
 
     // Previously HASH_DELIMITER = "-" in SystemParameters, but now is the same
     // as DIP_GLOBAL_ADD_DELIMITER
@@ -619,8 +619,9 @@ public class MyUtilities {
 	    throw new RuntimeException("Unsupported getM " + mDescriptor);
 	}
     }
-
-    public static int getNumParentTasks(TopologyContext tc,
+    
+   
+    public static int getNumTasks(TopologyContext tc,
 	    List<StormEmitter> emittersList) {
 	int result = 0;
 	for (final StormEmitter emitter : emittersList) {
@@ -631,15 +632,16 @@ public class MyUtilities {
 	}
 	return result;
     }
+    
 
     // used for NoACK optimization
-    public static int getNumParentTasks(TopologyContext tc,
+    public static int getNumTasks(TopologyContext tc,
 	    StormEmitter emitter1, StormEmitter... emittersArray) {
 	final List<StormEmitter> emittersList = new ArrayList<StormEmitter>();
 	emittersList.add(emitter1);
 	emittersList.addAll(Arrays.asList(emittersArray));
 
-	return getNumParentTasks(tc, emittersList);
+	return getNumTasks(tc, emittersList);
     }
 
     // used for NoACK optimization for StormSrcJoin
