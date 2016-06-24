@@ -42,7 +42,7 @@ import ch.epfl.data.squall.utilities.MyUtilities;
 import ch.epfl.data.squall.utilities.SystemParameters;
 
 public abstract class StormSpoutComponent extends BaseRichSpout implements
-	StormComponent, StormEmitter {
+StormComponent, StormEmitter {
     private static final long serialVersionUID = 1L;
     private static Logger LOG = Logger.getLogger(StormSpoutComponent.class);
 
@@ -58,11 +58,11 @@ public abstract class StormSpoutComponent extends BaseRichSpout implements
 
     private final List<Integer> _hashIndexes;
     private final List<ValueExpression> _hashExpressions;
-    
-    private final StormEmitter _targetEmitters;
+
 
     // for ManualBatch(Queuing) mode
-//    private List<Integer> _targetTaskIds;
+    //    private List<Integer> _targetTaskIds;
+    private final StormEmitter _targetEmitter; //or child
     private int _targetParallelism;
     private StringBuilder[] _targetBuffers;
     private long[] _targetTimestamps;
@@ -83,9 +83,9 @@ public abstract class StormSpoutComponent extends BaseRichSpout implements
 	    boolean isPartitioner, Map conf) {
 	_conf = conf;
 	_ID = cp.getName();
-	
-	_targetEmitters = cp.getChild();
-	
+
+	_targetEmitter = cp.getChild();
+
 	_componentIndex = String.valueOf(allCompNames.indexOf(_ID));
 	_printOut = cp.getPrintOut();
 	_hierarchyPosition = hierarchyPosition;
@@ -114,9 +114,9 @@ public abstract class StormSpoutComponent extends BaseRichSpout implements
 		// timestamp of the buffer
 		_targetTimestamps[dstIndex] = timestamp;
 	_targetBuffers[dstIndex].append(tupleHash)
-		.append(SystemParameters.MANUAL_BATCH_HASH_DELIMITER)
-		.append(tupleString)
-		.append(SystemParameters.MANUAL_BATCH_TUPLE_DELIMITER);
+	.append(SystemParameters.MANUAL_BATCH_HASH_DELIMITER)
+	.append(tupleString)
+	.append(SystemParameters.MANUAL_BATCH_TUPLE_DELIMITER);
     }
 
     @Override
@@ -218,10 +218,14 @@ public abstract class StormSpoutComponent extends BaseRichSpout implements
     @Override
     public void open(Map map, TopologyContext tc, SpoutOutputCollector collector) {
 	_collector = collector;
-		
-	_targetParallelism = MyUtilities.getNumTasks(tc,
-		    Arrays.asList(_targetEmitters));
-	
+
+	//_targetTaskIds = MyUtilities.findTargetTaskIds(tc);
+	//_targetParallelism = _targetTaskIds.size();
+
+	// targetEmitter is NULL for the FINAL_COMPONENT
+	if (_targetEmitter != null) _targetParallelism = MyUtilities.getNumTasks(tc,
+		Arrays.asList(_targetEmitter));
+
 	_targetBuffers = new StringBuilder[_targetParallelism];
 	_targetTimestamps = new long[_targetParallelism];
 	for (int i = 0; i < _targetParallelism; i++)
@@ -235,9 +239,9 @@ public abstract class StormSpoutComponent extends BaseRichSpout implements
 	    if ((getChainOperator() != null) && getChainOperator().isBlocking()) {
 		final Operator lastOperator = getChainOperator()
 			.getLastOperator();
-                MyUtilities.printBlockingResult(_ID,
-                                                lastOperator,
-                                                _hierarchyPosition, _conf, LOG);
+		MyUtilities.printBlockingResult(_ID,
+			lastOperator,
+			_hierarchyPosition, _conf, LOG);
 
 	    }
     }

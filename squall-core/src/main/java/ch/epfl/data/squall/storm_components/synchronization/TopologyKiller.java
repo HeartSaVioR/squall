@@ -84,7 +84,7 @@ public class TopologyKiller extends BaseRichBolt implements StormComponent {
     public void execute(Tuple tuple) {
 	LOG.info("TopologyKiller: Received EOF message from componentId: "
 		+ tuple.getSourceComponent() + ", taskId: "
-		+ tuple.getSourceTask());
+		+ "[unsupported in heron]"); // tuple.getSourceTask()
 	_numberFinishedTasks++;
 	LOG.info("TopologyKiller: " + (_numberRegisteredTasks - _numberFinishedTasks) + " remaining");
 	if (_numberRegisteredTasks == _numberFinishedTasks) {

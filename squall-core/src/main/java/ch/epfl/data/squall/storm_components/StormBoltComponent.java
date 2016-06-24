@@ -72,9 +72,8 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 
     // for ManualBatch(Queuing) mode
     //private List<Integer> _targetTaskIds;
+    private final StormEmitter _targetEmitter; // or child
     private int _targetParallelism;
-    
-    private final StormEmitter _targetEmitters;
     
     private StringBuilder[] _targetBuffers;
     private long[] _targetTimestamps;
@@ -119,7 +118,7 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 	_hashIndexes = cp.getHashIndexes();
 	_hashExpressions = cp.getHashExpressions();
 	
-	_targetEmitters = cp.getChild(); 
+	_targetEmitter = cp.getChild(); 
 	
 //	 setWindowSemantics(conf); // Set Window Semantics if Available in the
 	// configuration file
@@ -257,16 +256,16 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 	//_targetTaskIds = MyUtilities.findTargetTaskIds(tc);
 	//_targetParallelism = _targetTaskIds.size();
 	
-	_targetParallelism = MyUtilities.getNumTasks(tc,
-		    Arrays.asList(_targetEmitters));
+	// targetEmitter is NULL for the FINAL_COMPONENT
+	if (_targetEmitter != null) _targetParallelism = MyUtilities.getNumTasks(tc,
+		    Arrays.asList(_targetEmitter));
 	
 	
-	//
 	_targetBuffers = new StringBuilder[_targetParallelism];
 	_targetTimestamps = new long[_targetParallelism];
 	for (int i = 0; i < _targetParallelism; i++)
 	    _targetBuffers[i] = new StringBuilder("");
-
+	
 	// initial statistics
 	printStatistics(SystemParameters.INITIAL_PRINT);
     }
