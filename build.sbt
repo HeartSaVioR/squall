@@ -94,6 +94,7 @@ lazy val squall = (project in file("squall-core")).
       "com.twitter.heron" % "heron-storm" % "0.14.0", 
       //"org.apache.storm" % "storm-core" % "0.9.4" % "provided",
       "org.slf4j" % "log4j-over-slf4j" % "1.7.12",
+      "ch.qos.logback" % "logback-classic" % "1.1.7",
       //"io.dropwizard" % "dropwizard-metrics" % "0.8.1",
       //"org.apache.storm" % "storm-starter" % "0.9.4",
       "junit" % "junit" % "4.12" % Test,

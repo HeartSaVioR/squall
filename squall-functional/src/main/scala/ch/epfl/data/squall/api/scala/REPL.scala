@@ -85,11 +85,12 @@ Type "help" for Squall related help
       // as it assumes that it has already been submitted.
       // We can use Java reflection to hack into StormSubmitter and "reset" it,
       // so we can use submit multiple topologies during one run.
-      import backtype.storm.StormSubmitter
-      import java.lang.reflect.Field
-      val f : Field = (new StormSubmitter()).getClass().getDeclaredField("submittedJar");
-      f.setAccessible(true);
-      f.set(new StormSubmitter(), null);
+      //import backtype.storm.StormSubmitter
+      //import java.lang.reflect.Field
+      
+//      val f : Field = (new StormSubmitter()).getClass().getDeclaredField("submittedJar");
+//      f.setAccessible(true);
+//      f.set(new StormSubmitter(), null);
 
       // Now we have to trick storm into thinking we launched with the storm
       // script. This is easier!
