@@ -86,9 +86,6 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
     protected long numNegatives = 0;
     protected double maxNegative = 0;
 
-    // EWH histogram
-    private boolean _isEWHPartitioner;
-
     /*
      * //TODO For Window Semantics
      */
@@ -104,7 +101,7 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 	    List<String> allCompNames, int hierarchyPosition,
 	    boolean isEWHPartitioner, Map conf) {
 	this(cp, allCompNames, hierarchyPosition, conf);
-	_isEWHPartitioner = isEWHPartitioner;
+	//_isEWHPartitioner = isEWHPartitioner;
     }
 
     public StormBoltComponent(ComponentProperties cp,
@@ -174,23 +171,14 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 		outputFields.add(StormComponent.TIMESTAMP);
 	    declarer.declareStream(SystemParameters.DATA_STREAM, new Fields(
 		    outputFields));
-
-	    if (_isEWHPartitioner) {
-		// EQUI-WEIGHT HISTOGRAM
-		final List<String> outputFieldsPart = new ArrayList<String>();
-		outputFieldsPart.add(StormComponent.COMP_INDEX);
-		outputFieldsPart.add(StormComponent.TUPLE); // list of string
-		outputFieldsPart.add(StormComponent.HASH);
-		declarer.declareStream(SystemParameters.PARTITIONER,
-			new Fields(outputFieldsPart));
-	    }
 	}
     }
 
     protected void finalizeProcessing() {
+	printContent(); // print content for blocking FINAL_COMPONENT, and updates LocalMergeResults
 	printStatistics(SystemParameters.FINAL_PRINT);
 	if (getChainOperator() != null) {
-	    getChainOperator().finalizeProcessing();
+	    getChainOperator().finalizeProcessing(); // This is only for printOperator
 	}
     }
 
@@ -278,7 +266,7 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 			.getLastOperator();
                 MyUtilities.printBlockingResult(_ID,
                                                 lastOperator,
-                                                _hierarchyPosition, _conf, LOG);
+                                                _hierarchyPosition, _conf, LOG);// prints and updates LocalMergeResults
 	    }
     }
 
@@ -365,18 +353,6 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 	    MyUtilities.processFinalAck(_numRemainingParents,
 		    getHierarchyPosition(), getConf(), stormTupleRcv,
 		    getCollector(), getPeriodicAggBatch());
-	    if (_isEWHPartitioner) {
-		// rel size
-		Values relSize = MyUtilities.createRelSizeTuple(
-			_componentIndex, (int) getNumSentTuples());
-		_collector.emit(SystemParameters.PARTITIONER, relSize);
-
-		// final ack
-		MyUtilities.processFinalAckCustomStream(
-			SystemParameters.PARTITIONER, _numRemainingParents,
-			getHierarchyPosition(), getConf(), stormTupleRcv,
-			getCollector(), getPeriodicAggBatch());
-	    }
 	    return true;
 	}
 	return false;
@@ -386,11 +362,6 @@ public abstract class StormBoltComponent extends BaseRichBolt implements
 
     // //////////////////////////////
     // //////////////////////////////end
-
-    protected boolean receivedDumpSignal(Tuple stormTuple) {
-	return stormTuple.getSourceStreamId().equalsIgnoreCase(
-		SystemParameters.DUMP_RESULTS_STREAM);
-    }
 
     // non-ManualBatchMode
     private void regularTupleSend(List<String> tuple, Tuple stormTupleRcv,

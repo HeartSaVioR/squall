@@ -44,9 +44,9 @@ public class LocalMergeResults {
     // for writing the full final result in Local Mode
     private static int _collectedLastComponents = 0;
 
+    // the number of tuples the componentTask is responsible for (!! not how many
+    // tuples are in storage!!)    
     private static int _numTuplesProcessed = 0;
-    // the number of tuples the componentTask is reponsible for (!! not how many
-    // tuples are in storage!!)
 
     private static AggregateOperator _computedAgg;
 
@@ -176,10 +176,8 @@ public class LocalMergeResults {
 	return MyUtilities.getPartFromEnd(path, 1);
     }
 
-    // The following 2 methods are crucial for collecting, printing and
-    // comparing the results in Local Mode
-    // called on the component task level, when all Spouts fully propagated
-    // their tuples
+    //Main entry for collecting results from each LAST_COMPONENT task in Local Mode
+    //   when all Spouts fully propagated their tuples (a bolt task received LAST_ACK msgs from all its parent tasks
     public static void localCollectFinalResult(Operator lastOperator,
 	    int hierarchyPosition, Map map, Logger log) {
 	if ((!SystemParameters.getBoolean(map, "DIP_DISTRIBUTED"))
@@ -239,6 +237,7 @@ public class LocalMergeResults {
 	LOG.info(sb.toString());
     }
 
+    //  Main entry from TopologyKiller: printing and comparing results (Local Mode)
     // called just before killExecution
     // only for local mode, since they are executed in a single process, sharing
     // all the classes

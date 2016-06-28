@@ -82,9 +82,6 @@ public class StormThetaJoin extends StormJoinerBoltComponent {
 	if (getHierarchyPosition() == FINAL_COMPONENT
 		&& (!MyUtilities.isAckEveryTuple(conf)))
 	    killer.registerComponent(this, parallelism);
-	if (cp.getPrintOut() && _operatorChain.isBlocking())
-	    currentBolt.allGrouping(killer.getID(),
-		    SystemParameters.DUMP_RESULTS_STREAM);
 	_firstRelationStorage = new TupleStorage();
 	_secondRelationStorage = new TupleStorage();
 	if (_joinPredicate != null) {
@@ -108,11 +105,6 @@ public class StormThetaJoin extends StormJoinerBoltComponent {
 	    _periodicAggBatch = new PeriodicAggBatchSend(_aggBatchOutputMillis,
 		    this);
 	    _firstTime = false;
-	}
-
-	if (receivedDumpSignal(stormTupleRcv)) {
-	    MyUtilities.dumpSignal(this, stormTupleRcv, getCollector());
-	    return;
 	}
 
 	if (!MyUtilities.isManualBatchingMode(getConf())) {

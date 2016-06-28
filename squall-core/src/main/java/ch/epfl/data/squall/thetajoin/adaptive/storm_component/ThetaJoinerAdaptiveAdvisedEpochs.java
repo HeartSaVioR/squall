@@ -184,9 +184,6 @@ public class ThetaJoinerAdaptiveAdvisedEpochs extends StormBoltComponent {
 	if (hierarchyPosition == FINAL_COMPONENT
 		&& (!MyUtilities.isAckEveryTuple(conf)))
 	    killer.registerComponent(this, _parallelism);
-	if (cp.getPrintOut() && _operatorChain.isBlocking())
-	    _currentBolt.allGrouping(killer.getID(),
-		    SystemParameters.DUMP_RESULTS_STREAM);
 
 	constructStorageAndIndexes();
 
@@ -465,10 +462,6 @@ public class ThetaJoinerAdaptiveAdvisedEpochs extends StormBoltComponent {
 	    _periodicAggBatch = new PeriodicAggBatchSend(_batchOutputMillis,
 		    this);
 	    _firstTime = false;
-	}
-	if (receivedDumpSignal(stormTupleRcv)) {
-	    MyUtilities.dumpSignal(this, stormTupleRcv, getCollector());
-	    return;
 	}
 
 	final String inputStream = stormTupleRcv.getSourceStreamId();

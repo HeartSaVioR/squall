@@ -223,9 +223,7 @@ public class SystemParameters {
     public static final long EOF_TIMEOUT_MILLIS = 1000;
     // Period between figuring out code is finished and
     // killing the execution
-    // In Local Mode needed more time because we also need to compare results
-    // (LocalMergeResults)
-    public static final long LOCAL_SLEEP_BEFORE_KILL_MILLIS = 8000;
+    public static final long LOCAL_SLEEP_BEFORE_KILL_MILLIS = 1000;// Not needed: FINAL_COMPONENT(s) dumps after receiving all LastAck, and then sends EOF to KillTopology
     public static final long CLUSTER_SLEEP_BEFORE_KILL_MILLIS = 2000;
 
     // default port, should not be changed unless some other application took
@@ -243,7 +241,8 @@ public class SystemParameters {
     public static final String DATA_STREAM = Utils.DEFAULT_STREAM_ID; /* "default" */
 
     public static final String EOF_STREAM = "2";
-    public static final String DUMP_RESULTS_STREAM = "3";
+    // Not needed anymore, as each component dumps its content once it gets final FinalAck (one FinalAck for each parent task)    
+    //public static final String DUMP_RESULTS_STREAM = "3";
 
     public static final String LAST_ACK = "LAST_ACK";
 

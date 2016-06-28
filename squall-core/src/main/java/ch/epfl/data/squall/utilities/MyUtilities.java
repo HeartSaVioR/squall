@@ -496,12 +496,6 @@ public class MyUtilities {
 	return values;
     }
 
-    public static void dumpSignal(StormComponent comp, Tuple stormTupleRcv,
-	    OutputCollector collector) {
-	comp.printContent();
-	collector.ack(stormTupleRcv);
-    }
-
     private static String extractSizeSkew(String dataPath) {
 	String parts[] = dataPath.split("/");
 	int size = parts.length;

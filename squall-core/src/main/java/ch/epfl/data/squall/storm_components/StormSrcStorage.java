@@ -105,10 +105,6 @@ public class StormSrcStorage extends StormBoltComponent {
 		&& (!MyUtilities.isAckEveryTuple(conf)))
 	    killer.registerComponent(this, parallelism);
 
-	if (cp.getPrintOut() && _operatorChain.isBlocking())
-	    currentBolt.allGrouping(killer.getID(),
-		    SystemParameters.DUMP_RESULTS_STREAM);
-
 	_joinStorage = preAggStorage;
 	_preAggProj = preAggProj;
     }
@@ -169,11 +165,6 @@ public class StormSrcStorage extends StormBoltComponent {
 	    _periodicAggBatch = new PeriodicAggBatchSend(_batchOutputMillis,
 		    this);
 	    _firstTime = false;
-	}
-
-	if (receivedDumpSignal(stormTupleRcv)) {
-	    MyUtilities.dumpSignal(this, stormTupleRcv, getCollector());
-	    return;
 	}
 
 	// inside StormSrcJoin, we have inputComponentName, not

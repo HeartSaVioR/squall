@@ -98,9 +98,6 @@ public class StormOperator extends StormBoltComponent {
 		&& (!MyUtilities.isAckEveryTuple(conf)))
 	    killer.registerComponent(this, parallelism);
 
-	if (cp.getPrintOut() && _operatorChain.isBlocking())
-	    currentBolt.allGrouping(killer.getID(),
-		    SystemParameters.DUMP_RESULTS_STREAM);
     }
 
     @Override
@@ -180,11 +177,6 @@ public class StormOperator extends StormBoltComponent {
 	    _periodicAggBatch = new PeriodicAggBatchSend(_aggBatchOutputMillis,
 		    this);
 	    _firstTime = false;
-	}
-
-	if (receivedDumpSignal(stormTupleRcv)) {
-	    MyUtilities.dumpSignal(this, stormTupleRcv, getCollector());
-	    return;
 	}
 
 	if (!MyUtilities.isManualBatchingMode(getConf())) {

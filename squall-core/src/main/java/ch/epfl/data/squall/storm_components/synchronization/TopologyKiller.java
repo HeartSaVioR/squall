@@ -75,10 +75,7 @@ public class TopologyKiller extends BaseRichBolt implements StormComponent {
     }
 
     @Override
-    public void declareOutputFields(OutputFieldsDeclarer declarer) {
-	declarer.declareStream(SystemParameters.DUMP_RESULTS_STREAM,
-		new Fields(SystemParameters.DUMP_RESULTS));
-    }
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {}
 
     @Override
     public void execute(Tuple tuple) {
@@ -89,12 +86,6 @@ public class TopologyKiller extends BaseRichBolt implements StormComponent {
 	LOG.info("TopologyKiller: " + (_numberRegisteredTasks - _numberFinishedTasks) + " remaining");
 	if (_numberRegisteredTasks == _numberFinishedTasks) {
 	    LOG.info("TopologyKiller: Received EOF from all the registered tasks. Killing cluster...");
-	    // EVENT WHEN ALL THE SPOUTS FINISHED EMITTING AND ACKED or
-	    // WHEN ALL THE TASKS FROM THE LAST COMPONENTS SENT EOF SIGNAL
-	    // Instruct all the components for which printOut is set to dump
-	    // their results
-	    _collector.emit(SystemParameters.DUMP_RESULTS_STREAM, new Values(
-		    SystemParameters.DUMP_RESULTS));
 
 	    if (SystemParameters.getBoolean(_conf, "DIP_DISTRIBUTED")) {
 		// write down statistics (the same which is shown in Storm UI
@@ -151,17 +142,10 @@ public class TopologyKiller extends BaseRichBolt implements StormComponent {
 		"These methods are not ment to be invoked for synchronizationStormComponents");
     }
 
-    public void registerComponent(BaseRichBolt component, String componentName,
-	    int parallelism) {
-	LOG.info("registering new component " + componentName
-		+ " with parallelism " + parallelism);
-	_numberRegisteredTasks += parallelism;
-	_inputDeclarer.allGrouping(componentName, SystemParameters.EOF_STREAM);
-    }
-
-    // Helper methods
+    // We are registering only FINAL_COMPONENT(s)
     public void registerComponent(StormComponent component, int parallelism) {
-	LOG.info("registering new component");
+	LOG.info("registering new component " + component.getID()
+		+ " with parallelism " + parallelism);
 	_numberRegisteredTasks += parallelism;
 	_inputDeclarer.allGrouping(component.getID(),
 		SystemParameters.EOF_STREAM);

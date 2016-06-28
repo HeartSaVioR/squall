@@ -70,9 +70,6 @@ public class StormDstTupleStorageJoin extends StormJoinerBoltComponent {
 	if (getHierarchyPosition() == FINAL_COMPONENT
 		&& (!MyUtilities.isAckEveryTuple(conf)))
 	    killer.registerComponent(this, parallelism);
-	if (cp.getPrintOut() && _operatorChain.isBlocking())
-	    currentBolt.allGrouping(killer.getID(),
-		    SystemParameters.DUMP_RESULTS_STREAM);
 
 	if (_joinPredicate != null) {
 	    createIndexes();
@@ -102,10 +99,7 @@ public class StormDstTupleStorageJoin extends StormJoinerBoltComponent {
 		    this);
 	    _firstTime = false;
 	}
-	if (receivedDumpSignal(stormTupleRcv)) {
-	    MyUtilities.dumpSignal(this, stormTupleRcv, getCollector());
-	    return;
-	}
+
 	if (!MyUtilities.isManualBatchingMode(getConf())) {
 	    final String inputComponentIndex = stormTupleRcv
 		    .getStringByField(StormComponent.COMP_INDEX); // getString(0);
