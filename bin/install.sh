@@ -24,4 +24,5 @@ sbt package
 sbt assemblyPackageDependency
 cd $CURR_DIR
 # The following is used only for the Cluster Mode
-cp ../squall-core/target/squall-dependencies-0.2.0.jar ../$STORMNAME/lib/
+# ../target/scala-2.11/ contains Heron dependencies (e.g. squall-heron-assembly-0.1-SNAPSHOT-deps.jar), so I think it will be loaded automatically (important for the Cluster Mode)
+cp ../squall-core/target/squall-dependencies-0.2.0.jar ../target/scala-2.11/

@@ -41,4 +41,4 @@ if ! [ -f $CONFIG_PATH ]; then
 fi
 
 # Running
-../$STORMNAME/bin/storm jar ../squall-core/target/squall-0.2.0.jar $MAIN_CLASS $CONFIG_PATH
+heron submit aurora ../squall-core/target/squall-0.2.0.jar $MAIN_CLASS $CONFIG_PATH
