@@ -24,6 +24,7 @@ import ch.epfl.data.squall.visitors.OperatorVisitor
 import ch.epfl.data.squall.api.scala.SquallType._
 import scala.collection.JavaConverters._
 import scala.collection.JavaConversions._
+import java.util.ArrayList
 
 
 /**
@@ -60,6 +61,15 @@ class ScalaFlatMapOperator[T: SquallType, U: SquallType](fn: T => Seq[U]) extend
     val squallTuple = squalTypeInput.convertBack(tuple.toList)
     val cmp = fn(squallTuple)
     val res = cmp map { squalTypeOutput.convert(_) }
-    res map { x => x : java.util.List[String] }
+        
+    val tmp1 = res map { x =>
+      val result = new ArrayList[String]()
+      x.foreach { y => result.add(y) }
+      result }
+    
+    val result = new ArrayList[java.util.List[String]]()
+    tmp1.foreach { x => result.add(x) }
+    result
+    
   }
 }

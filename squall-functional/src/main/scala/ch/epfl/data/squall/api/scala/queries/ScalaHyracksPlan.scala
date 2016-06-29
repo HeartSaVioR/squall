@@ -26,6 +26,7 @@ import ch.epfl.data.squall.query_plans.QueryPlan
 import ch.epfl.data.squall.api.scala._
 import ch.epfl.data.squall.api.scala.TPCHSchema._
 import ch.epfl.data.squall.utilities.SquallContext
+import com.esotericsoftware.kryo.Kryo
 
 /**
  * @author mohamed
@@ -44,5 +45,24 @@ class ScalaHyracksPlan(dataPath: String, extension: String, context: SquallConte
     val agg = join.groupByKey(x => 1, _._1._2)
     agg.execute(context)
   }
+  
 
+}
+
+object main{
+  
+  def main(args: Array[String]): Unit = {
+    
+    val k = new Kryo()
+    
+  k.setRegistrationRequired(true);
+      k.register(scala.collection.convert.Wrappers.SeqWrapper.getClass)
+      
+      val context = new SquallContext();
+      context.setLocal()
+      
+      val plan = new ScalaHyracksPlan("/Users/elhachim/squall/test/data/tpch/0.01G", ".tbl", context).getQueryPlan()
+      val result = context.submitLocalAndWait("scalahyracks", plan)
+  }
+  
 }

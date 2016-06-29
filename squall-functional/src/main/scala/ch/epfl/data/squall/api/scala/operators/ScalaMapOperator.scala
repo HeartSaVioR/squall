@@ -23,7 +23,7 @@ import ch.epfl.data.squall.operators.Operator
 import ch.epfl.data.squall.operators.OneToOneOperator
 import ch.epfl.data.squall.visitors.OperatorVisitor
 import ch.epfl.data.squall.api.scala.SquallType._
-import scala.collection.JavaConverters._
+import java.util.ArrayList
 import scala.collection.JavaConversions._
 
 
@@ -61,6 +61,10 @@ class ScalaMapOperator[T: SquallType, U: SquallType](fn: T => U) extends OneToOn
     val squallTuple = squalTypeInput.convertBack(tuple.toList)
     val cmp = fn(squallTuple)
     val res = squalTypeOutput.convert(cmp)
-    res
+    val result = new ArrayList[String]()
+    res.foreach { x => result.add(x) }
+    
+    result
+
   }
 }

@@ -31,8 +31,9 @@ import ch.epfl.data.squall.query_plans.QueryBuilder
 import ch.epfl.data.squall.types.IntegerType
 import ch.epfl.data.squall.utilities.SquallContext
 import org.apache.log4j.Logger
-import scala.collection.JavaConverters._
+//import scala.collection.JavaConverters._
 import scala.reflect.runtime.universe._
+import java.util.ArrayList
 
 /**
  * @author mohamed
@@ -186,8 +187,15 @@ object Stream {
     equijoinComponent
   }
 
-  private implicit def toIntegerList(lst: List[Int]) =
-    seqAsJavaListConverter(lst.map(i => i: java.lang.Integer)).asJava
+  private implicit def toIntegerList(lst: List[Int]):java.util.List[Integer] ={
+   
+    //new java.util.ArrayList<Integer>( Arrays.asList[Integer]( seqAsJavaListConverter(lst.map(i => i: java.lang.Integer)).asJava ) )
+    //val l =    new ArrayList (seqAsJavaListConverter(lst.map(i => i: java.lang.Integer)).asJava) //works before!
+   val result = new ArrayList[Integer]()
+   lst.foreach { x => result.add(x) }
+    
+    result
+  }
 
   private def mainInterprete[T: SquallType, U: SquallType, A: Numeric](str: TailStream[T, U, A], windowMetaData: List[Int], context: SquallContext): QueryBuilder = str match {
     case GroupedStream(parent, agg, ind) => {
@@ -199,9 +207,9 @@ object Stream {
       val res = ind(image)
       val indices = st2.convertIndexesOfTypeToListOfInt(res)
       var aggOp = new ScalaAggregateOperator(agg, context.getConfiguration()).setGroupByColumns(toIntegerList(indices)) //.SetWindowSemantics(10)
-      if (windowMetaData.get(0) > 0 && windowMetaData.get(1) <= 0)
+      if (windowMetaData(0) > 0 && windowMetaData(1) <= 0)
         aggOp.SetWindowSemantics(windowMetaData.get(0))
-      else if (windowMetaData.get(1) > 0 && windowMetaData.get(0) > windowMetaData.get(1))
+      else if (windowMetaData(1) > 0 && windowMetaData(0) > windowMetaData(1))
         aggOp.SetWindowSemantics(windowMetaData.get(0), windowMetaData.get(1))
       val _queryBuilder = new QueryBuilder();
       interprete(parent, _queryBuilder, Tuple4(List(aggOp), null, null, -1), context)
@@ -209,7 +217,7 @@ object Stream {
     }
     case WindowStream(parent, rangeSize, slideSize) => {
       //only the last one is effective
-      if ((windowMetaData.get(0) < 0 && windowMetaData.get(1) < 0)) {
+      if ((windowMetaData(0) < 0 && windowMetaData(1) < 0)) {
         mainInterprete(parent, List(rangeSize, slideSize), context)
       } else mainInterprete(parent, windowMetaData, context)
 
