@@ -170,7 +170,10 @@ public class Main {
 
     public Main(QueryBuilder queryPlan, Map map, String confPath) {
 	Config conf = SystemParameters.mapToStormConfig(map);
-
+	
+	// With Heron, it often happens that not all data sources get ack for all of its messages
+	if (!SystemParameters.getBoolean(conf, "DIP_DISTRIBUTED")) SystemParameters.putInMap(conf, "DIP_NUM_ACKERS", 0);
+	
 	addVariablesToMap(conf, confPath);
 	putBatchSizes(queryPlan, conf);
         SquallContext context = new SquallContext(conf);
@@ -187,6 +190,9 @@ public class Main {
 	// conf.put(conf.TOPOLOGY_EXECUTOR_SEND_BUFFER_SIZE, 262144);
 	// conf.put(conf.TOPOLOGY_RECEIVER_BUFFER_SIZE, 8);
 	// conf.put(conf.TOPOLOGY_TRANSFER_BUFFER_SIZE, 262144);
+	
+	// With Heron, it often happens that not all data sources get ack for all of its messages
+	if (!SystemParameters.getBoolean(conf, "DIP_DISTRIBUTED")) SystemParameters.putInMap(conf, "DIP_NUM_ACKERS", 0);
 
 	addVariablesToMap(conf, confPath);
 	putBatchSizes(queryPlan, conf);

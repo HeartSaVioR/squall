@@ -224,6 +224,8 @@ public class SystemParameters {
     // Period between figuring out code is finished and
     // killing the execution
     public static final long LOCAL_SLEEP_BEFORE_KILL_MILLIS = 1000;// Not needed: FINAL_COMPONENT(s) dumps after receiving all LastAck, and then sends EOF to KillTopology
+                                                                   // Without this change, LocalMergeResult won't work
+                                                                   // But now isAckEveryTuple is not supported anymore
     public static final long CLUSTER_SLEEP_BEFORE_KILL_MILLIS = 2000;
 
     // default port, should not be changed unless some other application took
