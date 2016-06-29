@@ -172,7 +172,10 @@ public class Main {
 	Config conf = SystemParameters.mapToStormConfig(map);
 	
 	// With Heron, it often happens that not all data sources get ack for all of its messages
-	if (!SystemParameters.getBoolean(conf, "DIP_DISTRIBUTED")) SystemParameters.putInMap(conf, "DIP_NUM_ACKERS", 0);
+	if (!SystemParameters.getBoolean(conf, "DIP_DISTRIBUTED")) {
+	    LOG.info("INFO: Setting DIP_NUM_ACKERS to 0 (at least once semantics) in Local Mode.");
+	    SystemParameters.putInMap(conf, "DIP_NUM_ACKERS", 0);
+	}
 	
 	addVariablesToMap(conf, confPath);
 	putBatchSizes(queryPlan, conf);
@@ -192,7 +195,10 @@ public class Main {
 	// conf.put(conf.TOPOLOGY_TRANSFER_BUFFER_SIZE, 262144);
 	
 	// With Heron, it often happens that not all data sources get ack for all of its messages
-	if (!SystemParameters.getBoolean(conf, "DIP_DISTRIBUTED")) SystemParameters.putInMap(conf, "DIP_NUM_ACKERS", 0);
+	if (!SystemParameters.getBoolean(conf, "DIP_DISTRIBUTED")) {
+	    LOG.info("INFO: Setting DIP_NUM_ACKERS to 0 (at least once semantics) in Local Mode.");
+	    SystemParameters.putInMap(conf, "DIP_NUM_ACKERS", 0);
+	}
 
 	addVariablesToMap(conf, confPath);
 	putBatchSizes(queryPlan, conf);
