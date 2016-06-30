@@ -4,8 +4,8 @@
 #Heron
 This is special branch tailored to porting Squall on Heron (rather than Storm). To install Squall-Heron and experiment with it:
 * Follow the [QuickStart](https://github.com/epfldata/squall/wiki/Quick-Start:-Local-Mode) guidelines which get you started with installing Squall & Heron and running SQL examples in localmode.
-* [This](https://github.com/epfldata/squall/wiki/Imperative-Squall-interface) section gives more information about running moreSQL queries on Squall.
-* For window semantics, please refer to the example explained below.
+* [This](https://github.com/epfldata/squall/wiki/Imperative-Squall-interface) section gives more information about running SQL queries on Squall.
+* For Window Semantics, please refer to the example explained [below](https://github.com/epfldata/squall/tree/squall-heron#window-semantics-example).
 * Squall provides a cool interactive [Scala REPL frontend](https://github.com/epfldata/squall/wiki/Squall-REPL). We have worked it out to work well with Heron. However, some subtle functionalities which are related to managing running queries are not fully compatible due to changes in the Heron structure, in particluar the exclusion of the Nimbus.
 * For further information about Squall please refer to the [Squall wiki](http://github.com/epfldata/squall/wiki).
 * [Here](https://github.com/akathorn/squall-example-project) is a cool external project that successfully connected Squall to the Twitter firehose for further analytics.
