@@ -2,7 +2,13 @@
 <!-- <p> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        <img style="float: center" align="middle" src="https://raw.githubusercontent.com/epfldata/squall/master/logo/logo.jpg"> </p> -->
 
 #Heron
-This is special branch tailored to porting Squall on Heron (rather than Storm).
+This is special branch tailored to porting Squall on Heron (rather than Storm). To install Squall-Heron and experiment with it:
+* Follow the [QuickStart](https://github.com/epfldata/squall/wiki/Quick-Start:-Local-Mode) guidelines which get you started with installing Squall & Heron and running SQL examples in localmode.
+* [This](https://github.com/epfldata/squall/wiki/Imperative-Squall-interface) section gives more information about running moreSQL queries on Squall.
+* For window semantics, please refer to the example explained below.
+* Squall provides a cool interactive [Scala REPL frontend](https://github.com/epfldata/squall/wiki/Squall-REPL). We have worked it out to work well with Heron. However, some subtle functionalities which are related to managing running queries are not fully compatible due to changes in the Heron structure, in particluar the exclusion of the Nimbus.
+* For further information about Squall please refer to the [Squall wiki](http://github.com/epfldata/squall/wiki).
+* [Here](https://github.com/akathorn/squall-example-project) is a cool external project that successfully connected Squall to the Twitter firehose for further analytics.
 
 
 #Squall [![Build Status](https://travis-ci.org/epfldata/squall.svg?branch=master)](https://travis-ci.org/epfldata/squall)
@@ -101,8 +107,24 @@ Squall also provides out-of-the-box functionality for window semantics. That is 
 
 [Here](https://github.com/epfldata/squall/blob/master/squall-functional/src/main/scala/ch/epfl/data/squall/api/scala/queries/ScalaTPCH7Plan.scala) is an example of a fully running query with window semantics.
 
+To run this example, you can simply run the test class for this query through:
+```scala
+    sbt
+    project functional
+    test-only ScalaTPCH7Test
+``` 
+This will fire up a local heron cluster that runs the entire query. The results, which are printed out, should look something similar to this:
 
-
+```
+GERMANY|FRANCE|1995, wid:1, Timestamp: [2016-06-30 19:24:38.853 , 2016-06-30 19:24:58.853]  = 23809.149
+GERMANY|FRANCE|1995, wid:2, Timestamp: [2016-06-30 19:24:43.853 , 2016-06-30 19:25:03.853]  = 621159.4881999999
+GERMANY|FRANCE|1995, wid:3, Timestamp: [2016-06-30 19:24:48.853 , 2016-06-30 19:25:08.853]  = 621159.4881999999
+...
+GERMANY|FRANCE|1996, wid:1, Timestamp: [2016-06-30 19:24:38.853 , 2016-06-30 19:24:58.853]  = 40579.659
+GERMANY|FRANCE|1996, wid:2, Timestamp: [2016-06-30 19:24:43.853 , 2016-06-30 19:25:03.853]  = 379095.8854
+GERMANY|FRANCE|1996, wid:3, Timestamp: [2016-06-30 19:24:48.853 , 2016-06-30 19:25:08.853]  = 379095.8854
+```
+Where the first, second and third columns refer to the group-key, window-id, and Timestamp Interval of each window-id respectively.
 
 ### Documentation
 White paper is available [here](http://infoscience.epfl.ch/record/217286/files/paper.pdf). Detailed documentation can be found on the [Squall wiki](http://github.com/epfldata/squall/wiki).
