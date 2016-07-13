@@ -42,10 +42,12 @@ fi
 
 # Running
 java -Xmx128m -cp ../squall-core/target/squall-0.2.0.jar:../squall-core/target/squall-dependencies-0.2.0.jar:\
-../target/scala-2.11/squall-heron-assembly-0.1-SNAPSHOT-deps.jar:../target/scala-2.11/squall-heron_2.11-0.1-SNAPSHOT.jar:\
-../squall-functional/target/squall-frontend-0.2.0.jar:./squall-functional/target/squall-frontend-dependencies-0.2.0.jar:\
-../squall-functional/target/macros/squall-frontend-macros-0.2.0.jar:../squall-functional/target/macros/squall-frontend-macros-dependencies-0.2.0.jar $MAIN_CLASS $CONFIG_PATH
+../target/scala-2.11/squall-heron-assembly-0.1-SNAPSHOT-deps.jar:../target/scala-2.11/squall-heron_2.11-0.1-SNAPSHOT.jar \
+$MAIN_CLASS $CONFIG_PATH
 
+# This are dependencies for Scala query plans
+#../squall-functional/target/squall-frontend-0.2.0.jar:./squall-functional/target/squall-frontend-dependencies-0.2.0.jar:\
+#../squall-functional/target/macros/squall-frontend-macros-0.2.0.jar:../squall-functional/target/macros/squall-frontend-macros-dependencies-0.2.0.jar
 
 # This did not work (java.lang.ClassNotFoundException: backtype.storm.Config)
 #heron submit local ../squall-core/target/squall-0.2.0.jar $MAIN_CLASS $CONFIG_PATH

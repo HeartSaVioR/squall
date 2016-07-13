@@ -10,7 +10,8 @@ DIP_RESULT_ROOT ../test/results/
 # THETA JOIN TYPE
 # STATIC PARTITIONING = 0
 # DYNAMIC PARTITIONING = 1 
-DIP_JOIN_TYPE 1
+# DYNAMIC PARTITONING relies on direct grouping, which is not implemented in Heron
+DIP_JOIN_TYPE 0
 
 NATION1_PAR 1
 NATION2_PAR 1
